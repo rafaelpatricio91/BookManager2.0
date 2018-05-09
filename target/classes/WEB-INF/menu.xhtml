@@ -1,0 +1,75 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pu="http://primefaces.org/avalon">
+
+	<h:form id="menuform">
+		<div class="layout-menu-container">
+			<div class="nano">
+				<div class="nano-content menu-scroll-content">
+					<ui:fragment
+						rendered="#{guestPreferences.profileMode == 'inline' and guestPreferences.menuLayout != 'menu-layout-static menu-layout-horizontal'}">
+						<div class="profile">
+							<a id="profile-options" href="#"> <p:graphicImage
+									name="images/avatar.png" library="avalon-layout"
+									styleClass="profile-image" style="border: 0 none" /> <span
+								class="profile-name">Isabel Oliviera</span> <i
+								class="fa fa-fw fa-caret-down"></i> <span class="profile-role">Marketing</span>
+							</a>
+						</div>
+
+						<ul id="profile-menu" class="layout-menu">
+							<li role="menuitem"><a href="#"> <i
+									class="fa fa-fw fa-user"></i> <span>Profile</span>
+							</a>
+								<div class="layout-menu-tooltip">
+									<div class="layout-menu-tooltip-arrow"></div>
+									<div class="layout-menu-tooltip-text">Profile</div>
+								</div></li>
+							<li role="menuitem"><a href="#"> <i
+									class="fa fa-fw fa-user-secret"></i> <span>Privacy</span>
+							</a>
+								<div class="layout-menu-tooltip">
+									<div class="layout-menu-tooltip-arrow"></div>
+									<div class="layout-menu-tooltip-text">Privacy</div>
+								</div></li>
+							<li role="menuitem"><a href="#"> <i
+									class="fa fa-fw fa-cog"></i> <span>Settings</span>
+							</a>
+								<div class="layout-menu-tooltip">
+									<div class="layout-menu-tooltip-arrow"></div>
+									<div class="layout-menu-tooltip-text">Settings</div>
+								</div></li>
+							<li role="menuitem"><a href="#"> <i
+									class="fa fa-fw fa-sign-out"></i> <span>Logout</span>
+							</a>
+								<div class="layout-menu-tooltip">
+									<div class="layout-menu-tooltip-arrow"></div>
+									<div class="layout-menu-tooltip-text">Logout</div>
+								</div></li>
+						</ul>
+					</ui:fragment>
+
+					<pu:menu widgetVar="me">
+						<p:menuitem id="om_dashboard" value="Dashboard"
+							icon="fa fa-fw fa-home" outcome="/dashboard" />
+
+						<p:menuitem id="om_autor" value="Autor" icon="fa fa-fw fa-user-o"
+							outcome="/autor" />
+
+						<p:menuitem id="om_livro" value="Livro" icon="fa fa-fw fa-book"
+							outcome="/livro" />
+							
+						<p:menuitem id="om_leituras" value="Leituras" icon="fa fa-fw fa-quote-left"
+							outcome="/leituras" />
+							
+						<p:menuitem id="om_estatisticas" value="Estatísticas" icon="fa fa-fw fa-percent"
+							outcome="/leituras" />
+					</pu:menu>
+				</div>
+			</div>
+		</div>
+	</h:form>
+</ui:composition>

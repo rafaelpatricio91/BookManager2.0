@@ -1,0 +1,241 @@
+<ui:composition template="/WEB-INF/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Livros</ui:define>
+
+	<ui:define name="conteudo">
+		<div id="all">
+			<div id="div-grid">
+				<h:form id="form-grid">
+					<p:growl id="msg" />
+					<p:panelGrid columns="2" style="margin: 0 auto">
+						<f:facet name="header">
+					Cadastro de Livros
+				</f:facet>
+
+						<p:outputLabel value="Título" for="titulo" />
+						<p:inputText id="titulo" value="#{livroMB.livro.titulo}" />
+
+						<p:outputLabel value="Autor" for="autor" />
+						<h:panelGroup>
+							<p:selectOneMenu filter="true" id="autor"
+								value="#{livroMB.livro.autor}">
+								<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+								<f:selectItems var="a" itemValue="#{a}"
+									value="#{beanAutor.listaAutores}" itemLabel="#{a.nome}" />
+							</p:selectOneMenu>
+							<p:commandLink onclick="PF('modal-autor').show()" update=":form-autor">
+								<p:graphicImage library="img" name="add2.png" style="width: 30px; margin-left: 4px" />
+							</p:commandLink>
+						</h:panelGroup>
+
+						<p:outputLabel value="Gênero" for="genero" />
+						<p:inputText id="genero" value="#{livroMB.livro.genero}" />
+
+						<p:outputLabel value="Nº de páginas" for="paginas" />
+						<p:inputText id="paginas" value="#{livroMB.livro.numPaginas}" />
+
+						<p:outputLabel value="Sinopse" for="sinopse" />
+						<h:panelGroup>
+							<p:inputTextarea id="sinopse" cols="22" rows="4"
+								counter="display" value="#{livroMB.livro.sinopse}"
+								maxlength="600" counterTemplate="{0} caracteres restantes"
+								autoResize="false" />
+							<p />
+							<p:outputLabel id="display" for="sinopse" />
+						</h:panelGroup>
+
+						<p:outputLabel value="Nota no Skoob" for="skoob" />
+						<p:inputText id="skoob" value="#{livroMB.livro.skoob}" />
+
+						<p:outputLabel value="Mídia" for="midia" />
+						<p:selectOneMenu id="midia" value="#{livroMB.livro.midia}">
+							<f:selectItem noSelectionOption="true" itemLabel="Selecione" />
+							<f:selectItems var="midia" itemValue="#{midia}"
+								value="#{livroMB.tipoMidia}" itemLabel="#{midia.descricao}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Status" for="status" />
+						<p:selectOneMenu id="status" value="#{livroMB.livro.status}">
+							<f:selectItems var="s" itemValue="#{s}" value="#{livroMB.status}"
+								itemLabel="#{s.descricao}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel />
+						<p:commandButton value="Cadastrar" update="@form :form-table"
+							icon="ui-icon-disk" action="#{livroMB.cadastrar}" />
+
+					</p:panelGrid>
+				</h:form>
+			</div>
+
+			<div id="div-table">
+				<h:form id="form-table">
+					<p:dataTable value="#{livroMB.listaLivros}" var="livro"
+						emptyMessage="Não há dados gravados" rowIndexVar="index"
+						style="margin-top: 20px" id="tabela" paginator="true"
+						paginatorPosition="bottom" rows="10" rowHover="true">
+						<f:facet name="header">Tabela de Livros</f:facet>
+
+						<p:column headerText="#" width="10" style="text-align: center">
+					#{index+1}
+				</p:column>
+
+						<p:column headerText="Título" width="80"
+							style="text-align: center" sortBy="#{livro.titulo}">
+							<p:outputLabel value="#{livro.titulo}" />
+						</p:column>
+
+						<p:column headerText="Autor" width="80" style="text-align: center"
+							sortBy="#{livro.autor.nome}">
+							<p:outputLabel value="#{livro.autor.nome}" />
+						</p:column>
+
+						<p:column headerText="Gênero" width="50"
+							style="text-align: center" sortBy="#{livro.genero}">
+							<p:outputLabel value="#{livro.genero}" />
+						</p:column>
+
+						<p:column headerText="Páginas" width="30"
+							style="text-align: center" sortBy="#{livro.numPaginas}">
+							<p:outputLabel value="#{livro.numPaginas}" />
+						</p:column>
+
+						<p:column headerText="Nota no Skoob" width="20"
+							style="text-align: center" sortBy="#{livro.skoob}">
+							<p:outputLabel value="#{livro.skoob}" />
+						</p:column>
+
+						<p:column headerText="Mídia" width="20" style="text-align: center"
+							sortBy="#{livro.midia.descricao}">
+							<p:outputLabel value="#{livro.midia.descricao}" />
+						</p:column>
+
+						<p:column headerText="Status" width="20"
+							style="text-align: center" sortBy="#{livro.status.descricao}">
+							<p:outputLabel value="#{livro.status.descricao}" />
+						</p:column>
+
+						<p:column headerText="Editar" width="5" style="text-align: center">
+							<p:commandButton onclick="PF('modal').show()" ajax="true"
+								update=":modalForm" icon="ui-icon-pencil">
+								<f:setPropertyActionListener value="#{livro}"
+									target="#{livroMB.livroSelecionado}" />
+							</p:commandButton>
+						</p:column>
+
+						<p:column headerText="Excluir" width="5"
+							style="text-align: center">
+							<p:commandButton action="#{livroMB.remover}"
+								update="@form :form-grid:msg" icon="ui-icon-trash">
+								<f:setPropertyActionListener value="#{livro}"
+									target="#{livroMB.livroSelecionado}" />
+								<p:confirm header="Confirmar Exclusão"
+									message="Tem certeza que deseja excluir este livro?" />
+							</p:commandButton>
+							<p:confirmDialog rendered="true" global="true" showEffect="fade"
+								hideEffect="clip">
+								<p:commandButton value="Sim" type="button"
+									styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+									style="margin-left: 55px" />
+								<p:commandButton value="Não" type="button"
+									styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+									style="margin-left: 75px" />
+							</p:confirmDialog>
+						</p:column>
+					</p:dataTable>
+
+				</h:form>
+
+				<p:dialog header="Alterando" widgetVar="modal" modal="true">
+					<h:form id="modalForm">
+						<p:panelGrid columns="2">
+							<f:facet name="header">Alteração de Dados</f:facet>
+
+							<p:outputLabel value="Título" for="titulo" />
+							<p:inputText id="titulo"
+								value="#{livroMB.livroSelecionado.titulo}" />
+
+							<p:outputLabel value="Autor" />
+							<p:selectOneMenu filter="true"
+								value="#{livroMB.livroSelecionado.autor}">
+								<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+								<f:selectItems value="#{livroMB.listaAutores}" var="autor"
+									itemValue="#{autor}" itemLabel="#{autor.nome}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Gênero" for="genero" />
+							<p:inputText id="genero"
+								value="#{livroMB.livroSelecionado.genero}" />
+
+							<p:outputLabel value="Nº de páginas" for="paginas" />
+							<p:inputText id="paginas"
+								value="#{livroMB.livroSelecionado.numPaginas}" />
+
+							<p:outputLabel value="Sinopse" for="sinopse" />
+							<h:panelGroup>
+								<p:inputTextarea id="sinopse"
+									value="#{livroMB.livroSelecionado.sinopse}" cols="22" rows="4"
+									counter="display" maxlength="600"
+									counterTemplate="{0} caracteres restantes" autoResize="false" />
+								<p />
+								<p:outputLabel id="display" for="sinopse" />
+							</h:panelGroup>
+
+							<p:outputLabel value="Nota no Skoob" for="skoob" />
+							<p:inputText id="skoob" value="#{livroMB.livroSelecionado.skoob}" />
+
+							<p:outputLabel value="Mídia" for="midia" />
+							<p:selectOneMenu id="midia"
+								value="#{livroMB.livroSelecionado.midia}">
+								<f:selectItem noSelectionOption="true" itemLabel="Selecione" />
+								<f:selectItems value="#{livroMB.tipoMidia}" var="midia"
+									itemLabel="#{midia.descricao}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Status" for="status" />
+							<p:selectOneMenu id="status"
+								value="#{livroMB.livroSelecionado.status}">
+								<f:selectItems value="#{livroMB.status}" var="s"
+									itemLabel="#{s.descricao}" itemValue="#{s}" />
+							</p:selectOneMenu>
+
+							<h:outputLabel />
+							<p:commandButton value="Atualizar" action="#{livroMB.atualizar}"
+								update="@form :form-grid:msg :form-table"
+								onclick="PF('modal').hide()" />
+						</p:panelGrid>
+					</h:form>
+				</p:dialog>
+			</div>
+			
+			<p:dialog header="Cadastrando Autor" widgetVar="modal-autor"
+					modal="true" style="text-align: center">
+					<h:form id="form-autor">
+						<p:panelGrid columns="2" style="margin: 0 auto">
+							<p:outputLabel value="Nome" for="nome" />
+							<p:inputText id="nome" value="#{beanAutor.autor.nome}" />
+
+							<p:outputLabel value="Nacionalidade" for="nac" />
+							<p:inputText id="nac"
+								value="#{beanAutor.autor.nacionalidade}" />
+
+							<p:outputLabel />
+							<p:commandButton value="Cadastrar" icon="ui-icon-disk"
+								action="#{beanAutor.cadastrar}"
+								update="@form :form-grid:autor :form-grid:msg"
+								onclick="PF('modal-autor').hide()" />
+
+						</p:panelGrid>
+					</h:form>
+				</p:dialog>
+
+		</div>
+	</ui:define>
+
+</ui:composition>
+

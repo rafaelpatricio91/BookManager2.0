@@ -1,0 +1,270 @@
+<ui:composition template="/WEB-INF/template.xhtml"
+	 xmlns="http://www.w3.org/1999/xhtml"
+	 xmlns:h="http://java.sun.com/jsf/html"
+	 xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	 xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Leituras</ui:define>
+
+	<ui:define name="conteudo">
+	
+		<div id="all">
+		
+			<h:form id="form-table-lendo">
+			
+			<h2>Suas Leituras</h2>
+				<p:dataTable value="#{beanLeituras.listaLivrosLendo}" var="livro"
+						emptyMessage="Você não está lendo nehum livro no momento" rowIndexVar="index"
+						style="margin-top: 20px" id="tabela" paginator="true"
+						paginatorPosition="bottom" rows="10" rowHover="true" globalFilter="">
+						<f:facet name="header">Livros que você está lendo</f:facet>
+
+						<p:column headerText="#" width="10" style="text-align: center">
+							#{index+1}
+						</p:column>
+
+						<p:column headerText="Título" width="80"
+							style="text-align: center" sortBy="#{livro.titulo}">
+							<p:outputLabel value="#{livro.titulo}" />
+						</p:column>
+
+						<p:column headerText="Autor" width="80" style="text-align: center"
+							sortBy="#{livro.autor.nome}">
+							<p:outputLabel value="#{livro.autor.nome}" />
+						</p:column>
+
+						<p:column headerText="Páginas" width="30"
+							style="text-align: center" sortBy="#{livro.numPaginas}">
+							<p:outputLabel value="#{livro.numPaginas}" />
+						</p:column>
+
+						<p:column headerText="Nota no Skoob" width="20"
+							style="text-align: center" sortBy="#{livro.skoob}">
+							<p:outputLabel value="#{livro.skoob}" />
+						</p:column>
+
+						<p:column headerText="Mídia" width="20" style="text-align: center"
+							sortBy="#{livro.midia.descricao}">
+							<p:outputLabel value="#{livro.midia.descricao}" />
+						</p:column>
+
+						<p:column headerText="Início" width="20"
+							style="text-align: center" sortBy="#{livro.dataInicio}">
+							<p:outputLabel value="#{livro.dataInicio}" >
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</p:outputLabel>
+						</p:column>
+
+						<p:column headerText="Encerrar" width="5" style="text-align: center">
+							<p:commandButton onclick="PF('modal-encerrar').show()"
+								update=":form-modal-encerrar" icon="fa fa-fw fa-check-square-o">
+								<f:setPropertyActionListener value="#{livro}"
+									target="#{beanLeituras.livroSelecionado}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+			
+			</h:form>
+		
+			<h:form id="form-table-todos">
+				<h2>Livros Cadastrados</h2>
+				<p:dataTable value="#{beanLeituras.listaLivros}" var="livro"
+						emptyMessage="Não há dados gravados" rowIndexVar="index"
+						style="margin-top: 20px" id="tabela" paginator="true"
+						paginatorPosition="bottom" rows="10" rowHover="true" widgetVar="table-todos">
+						<f:facet name="header">
+							<p:outputLabel value="Busca em todos os campos: " for="globalFilter" />
+							<p:inputText id="globalFilter" onkeyup="PF('table-todos').filter()" />
+						</f:facet>
+
+						<p:column headerText="#" width="5" style="text-align: center">
+							#{index+1}
+						</p:column>
+
+						<p:column headerText="Título" width="70"
+							style="text-align: center" sortBy="#{livro.titulo}" filterBy="#{livro.titulo}" filterMatchMode="contains">
+							<p:outputLabel value="#{livro.titulo}" />
+						</p:column>
+
+						<p:column headerText="Autor" width="60" style="text-align: center"
+							sortBy="#{livro.autor.nome}" filterBy="#{livro.autor.nome}" filterMatchMode="contains">
+							<p:outputLabel value="#{livro.autor.nome}" />
+						</p:column>
+
+						<p:column headerText="Gênero" width="40"
+							style="text-align: center" sortBy="#{livro.genero}" filterBy="#{livro.genero}">
+							<p:outputLabel value="#{livro.genero}"  />
+						</p:column>
+
+						<p:column headerText="Páginas" width="30"
+							style="text-align: center" sortBy="#{livro.numPaginas}" filterBy="#{livro.numPaginas}">
+							<p:outputLabel value="#{livro.numPaginas}" />
+						</p:column>
+
+						<p:column headerText="Nota no Skoob" width="30"
+							style="text-align: center" sortBy="#{livro.skoob}" filterBy="#{livro.skoob}">
+							<p:outputLabel value="#{livro.skoob}" />
+						</p:column>
+
+						<p:column headerText="Mídia" width="30" style="text-align: center"
+							sortBy="#{livro.midia.descricao}" filterBy="#{livro.midia.descricao}">
+							<p:outputLabel value="#{livro.midia.descricao}" />
+						</p:column>
+
+						<p:column headerText="Status" width="30"
+							style="text-align: center" sortBy="#{livro.status.descricao}" filterBy="#{livro.status.descricao}">
+							<p:outputLabel value="#{livro.status.descricao}"  />
+						</p:column>
+
+						<p:column headerText="Ler" width="15" style="text-align: center">
+							<p:commandButton onclick="PF('modal-iniciar').show()"
+								update=":form-modal-iniciar" icon="fa fa-fw fa-book ">
+								<f:setPropertyActionListener value="#{livro}"
+									target="#{beanLeituras.livroSelecionado}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+			</h:form>
+			
+			<h:form>
+				<p:commandButton value="Sugerir Leitura" onclick="PF('modal-sugestao').show()" 
+								 update=":form-sugestao" style="margin-top: 20px;" />
+			</h:form>
+			
+			<p:dialog widgetVar="modal-sugestao" modal="true">
+				<h:form id="form-sugestao">
+					<p:dataTable value="#{beanLeituras.listaLivrosSugestao}" var="livro"
+						rowIndexVar="index"
+						style="margin-top: 20px" id="tabela" paginator="true"
+						paginatorPosition="bottom" rows="10" rowHover="true" widgetVar="table-sugestao">
+						<p:column headerText="#" width="5" style="text-align: center">
+							#{index+1}
+						</p:column>
+
+						<p:column headerText="Título" width="70"
+							style="text-align: center" sortBy="#{livro.titulo}">
+							<p:outputLabel value="#{livro.titulo}" />
+						</p:column>
+
+						<p:column headerText="Autor" width="60" style="text-align: center" sortBy="#{livro.autor.nome}">
+							<p:outputLabel value="#{livro.autor.nome}" />
+						</p:column>
+
+						<p:column headerText="Gênero" width="40"
+							style="text-align: center" sortBy="#{livro.genero}">
+							<p:outputLabel value="#{livro.genero}"  />
+						</p:column>
+
+						<p:column headerText="Páginas" width="30"
+							style="text-align: center" sortBy="#{livro.numPaginas}">
+							<p:outputLabel value="#{livro.numPaginas}" />
+						</p:column>
+
+						<p:column headerText="Nota no Skoob" width="30"
+							style="text-align: center" sortBy="#{livro.skoob}">
+							<p:outputLabel value="#{livro.skoob}" />
+						</p:column>
+
+						<p:column headerText="Mídia" width="30" style="text-align: center" sortBy="#{livro.midia.descricao}">
+							<p:outputLabel value="#{livro.midia.descricao}" />
+						</p:column>
+
+						<p:column headerText="Status" width="30"
+							style="text-align: center" sortBy="#{livro.status.descricao}">
+							<p:outputLabel value="#{livro.status.descricao}"  />
+						</p:column>
+
+						<p:column headerText="Ler" width="15" style="text-align: center">
+							<p:commandButton onclick="PF('modal-iniciar').show()"
+								update=":form-modal-iniciar" icon="fa fa-fw fa-book ">
+								<f:setPropertyActionListener value="#{livro}"
+									target="#{beanLeituras.livroSelecionado}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:dialog>
+			
+			<p:dialog widgetVar="modal-iniciar" modal="true">
+				<h:form id="form-modal-iniciar">
+					<p:panelGrid columns="2">
+						
+						<f:facet name="header">Iniciando Leitura</f:facet>
+					
+						<p:outputLabel value="Título"/>
+						<p:inputText value="#{beanLeituras.livroSelecionado.titulo}" readonly="true" />
+						
+						<p:outputLabel value="Autor"/>
+						<p:inputText value="#{beanLeituras.livroSelecionado.autor.nome}" readonly="true" />
+						
+						<p:outputLabel value="Mídia"/>
+						<p:inputText value="#{beanLeituras.livroSelecionado.midia.descricao}" readonly="true" />
+						
+						<p:outputLabel value="Início da Leitura" for="inicio"/>
+						<p:calendar id="inicio" value="#{beanLeituras.livroSelecionado.dataInicio}" pattern="dd/MM/yyyy" />
+						
+						<p:outputLabel />
+						<p:commandButton value="Iniciar Leitura" action="#{beanLeituras.iniciarLeitura}"
+										 update="@form :form-table-todos :form-table-lendo" onclick="PF('modal-iniciar').hide()" />
+						
+					</p:panelGrid>
+				</h:form>
+			</p:dialog>
+			
+			<p:dialog widgetVar="modal-encerrar" modal="true">
+				<h:form id="form-modal-encerrar">
+					<p:panelGrid columns="2">
+					
+						<p:outputLabel value="Título"/>
+						<p:inputText value="#{beanLeituras.livroSelecionado.titulo}" readonly="true" />
+						
+						<p:outputLabel value="Autor"/>
+						<p:inputText value="#{beanLeituras.livroSelecionado.autor.nome}" readonly="true" />
+						
+						<p:outputLabel value="Mídia"/>
+						<p:inputText value="#{beanLeituras.livroSelecionado.midia.descricao}" readonly="true" />
+						
+						<p:outputLabel value="Início da Leitura" for="inicio"/>
+						<p:inputText id="inicio" value="#{beanLeituras.livroSelecionado.dataInicio}" readonly="true">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:inputText>
+						
+						<p:outputLabel value="Término da Leitura" for="termino"/>
+						<p:calendar id="termino" value="#{beanLeituras.livroSelecionado.dataTermino}" pattern="dd/MM/yyyy" />
+						
+						<p:outputLabel />
+						<p:commandButton value="Concluir Leitura" action="#{beanLeituras.concluirLeitura}"
+										 update="@form :form-table-lendo :form-table-todos" 
+										 onclick="PF('modal-encerrar').hide()" />
+						
+					</p:panelGrid>
+				</h:form>
+			</p:dialog>
+			
+<!-- 			<p:dialog widgetVar="modal-estatisticas" modal="true"> -->
+<!-- 				<h:form id="form-estatisticas"> -->
+<!-- 					<p:panelGrid columns="2"> -->
+					
+<!-- 						<p:outputLabel>Você leu #{beanLeituras.livroSelecionado.titulo} em  -->
+<!-- 							                 #{beanLeituras.livroSelecionado.lidoEmDias}. </p:outputLabel>  -->
+<!-- 						<p:inputText value="#{beanLeituras.livroSelecionado.pagPorDia}" readonly="true" /> -->
+						
+<!-- 						<p:inputText value="#{beanLeituras.livroSelecionado.titulo}" readonly="true" /> -->
+						
+<!-- 						<p:outputLabel />  -->
+<!-- 						<p:button value="Fechar" -->
+<!-- 								  update="@form :form-table-lendo :form-table-todos" -->
+<!-- 								  onclick="PF('modal-estatisticas').hide(); PF('modal-encerrar').hide()" /> -->
+						
+<!-- 					</p:panelGrid> -->
+
+				
+
+					
+<!-- 				</h:form> -->
+<!-- 			</p:dialog> -->
+		</div>
+	</ui:define>
+	 
+</ui:composition>

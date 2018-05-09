@@ -1,0 +1,113 @@
+<ui:composition template="/WEB-INF/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Autores</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div id="all" style="">
+
+			<div id="div-grid">
+				<h:form id="form-grid">
+					<p:growl id="msg" />
+					<p:panelGrid columns="2" style="margin: 0 auto">
+						<f:facet name="header">Cadastro de Autores</f:facet>
+						<p:outputLabel value="Nome" for="nome" />
+						<p:inputText id="nome" value="#{beanAutor.autor.nome}" />
+
+						<p:outputLabel value="Nacionalidade" for="nac" />
+						<p:inputText id="nac" value="#{beanAutor.autor.nacionalidade}" />
+
+						<p:outputLabel />
+						<p:commandButton value="Cadastrar" icon="ui-icon-disk"
+							action="#{beanAutor.cadastrar}" update="@form :form-table" />
+
+					</p:panelGrid>
+				</h:form>
+			</div>
+
+			<div id="div-table">
+				<h:form id="form-table">
+
+					<p:dataTable var="a" paginator="true" style="margin-top: 20px"
+						value="#{beanAutor.listaAutores}" rowIndexVar="index" rows="10"
+						paginatorPosition="bottom" emptyMessage="Não há dados gravados"
+						rowHover="true" id="table">
+						<f:facet name="header">Tabela de Autores</f:facet>
+
+						<p:column headerText="#" width="10" style="text-align: center">
+					#{index+1}
+				</p:column>
+
+						<p:column headerText="Nome" width="50" style="text-align: center" sortBy="#{a.nome}">
+							<p:outputLabel value="#{a.nome}" />
+						</p:column>
+
+						<p:column headerText="Nacionalidade" width="50"
+							style="text-align: center" sortBy="#{a.nacionalidade}">
+							<p:outputLabel value="#{a.nacionalidade}" />
+						</p:column>
+
+						<p:column headerText="Editar" width="5" style="text-align: center">
+							<p:commandButton icon="ui-icon-pencil"
+								onclick="PF('modal-edit').show()" update=":form-edit">
+								<f:setPropertyActionListener value="#{a}"
+									target="#{beanAutor.autorSelecionado}" />
+							</p:commandButton>
+						</p:column>
+
+						<p:column headerText="Apagar" width="5" style="text-align: center">
+							<p:commandButton update="@form :form-grid:msg"
+								action="#{beanAutor.remover}" icon="ui-icon-trash">
+								<f:setPropertyActionListener value="#{a}"
+									target="#{beanAutor.autorSelecionado}" />
+								<p:confirm header="Confirmar Exclusão"
+									message="Tem certeza que deseja remover #{a.nome} ?" />
+
+								<p:confirmDialog global="true" rendered="true"
+									style="text-align: center">
+									<p:commandButton value="Sim" type="button" update="@form"
+										styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+									<p:commandButton value="Não" type="button"
+										styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+								</p:confirmDialog>
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+
+
+				</h:form>
+
+				<p:dialog header="Alterando Autor" widgetVar="modal-edit"
+					modal="true" style="text-align: center">
+					<h:form id="form-edit">
+						<p:panelGrid columns="2" style="margin: 0 auto">
+							<p:outputLabel value="Nome" for="nome" />
+							<p:inputText id="nome" value="#{beanAutor.autorSelecionado.nome}" />
+
+							<p:outputLabel value="Nacionalidade" for="nac" />
+							<p:inputText id="nac"
+								value="#{beanAutor.autorSelecionado.nacionalidade}" />
+
+							<p:outputLabel />
+							<p:commandButton value="Atualizar" icon="ui-icon-disk"
+								action="#{beanAutor.atualizar}"
+								update="@form :form-table :form-grid:msg"
+								onclick="PF('modal-edit').hide()" />
+
+						</p:panelGrid>
+					</h:form>
+				</p:dialog>
+
+			</div>
+
+		</div>
+
+	</ui:define>
+
+</ui:composition>
